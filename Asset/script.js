@@ -1,17 +1,17 @@
 // Quand le formulaire est soumis, on appelle la fonction 'fetchJoke' pour récupérer une blague.
-document.getElementById('jokeForm').addEventListener('submit', function(e) {
+document.getElementById('jokeForm').addEventListener('submit', function (e) {
     e.preventDefault();  // Empêche le formulaire d'être soumis de la manière traditionnelle.
     fetchJoke();  // Appelle la fonction qui récupère une blague de l'API.
 });
 
 // Quand le bouton 'clearTable' est cliqué, on vide le tableau et le LocalStorage.
-document.getElementById('clearTable').addEventListener('click', function() {
+document.getElementById('clearTable').addEventListener('click', function () {
     document.querySelector('#resultsTable tbody').innerHTML = '';  // Vide le tableau.
     localStorage.removeItem('jokes');  // Supprime les blagues du LocalStorage.
 });
 
 // Si il y a des blagues dans le LocalStorage lors du chargement de la page, elles sont affichées.
-if(localStorage.getItem('jokes')) {
+if (localStorage.getItem('jokes')) {
     const jokes = JSON.parse(localStorage.getItem('jokes'));  // Récupère les blagues du LocalStorage.
     jokes.forEach(joke => displayJoke(joke));  // Affiche chaque blague dans le tableau.
 }
@@ -20,11 +20,11 @@ if(localStorage.getItem('jokes')) {
 function fetchJoke() {
     // Récupère les catégories et flags choisis par l'utilisateur.
     const categories = Array.from(document.getElementById('jokeCategory').selectedOptions)
-                        .map(option => option.value)
-                        .join(',');
+        .map(option => option.value)
+        .join(',');
     const flags = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-                .map(input => input.value)
-                .join(',');
+        .map(input => input.value)
+        .join(',');
 
     // Construit l'URL pour la requête API avec les catégories et flags.
     const apiUrl = `https://v2.jokeapi.dev/joke/${categories}?&blacklistFlags=${flags}`;
@@ -51,7 +51,7 @@ function displayJoke(joke) {
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
     deleteButton.className = 'btn btn-danger btn-sm';  // Bootstrap classes for styling
-    deleteButton.addEventListener('click', function() {
+    deleteButton.addEventListener('click', function () {
         deleteJoke(row, joke);
     });
 
