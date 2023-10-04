@@ -18,7 +18,7 @@ if(localStorage.getItem('jokes')) {
 
 // Fonction pour récupérer une blague de l'API.
 function fetchJoke() {
-    // Récupère les catégories et drapeaux choisis par l'utilisateur.
+    // Récupère les catégories et flags choisis par l'utilisateur.
     const categories = Array.from(document.getElementById('jokeCategory').selectedOptions)
                         .map(option => option.value)
                         .join(',');
@@ -26,8 +26,8 @@ function fetchJoke() {
                 .map(input => input.value)
                 .join(',');
 
-    // Construit l'URL pour la requête API avec les catégories et drapeaux.
-    const apiUrl = `https://v2.jokeapi.dev/joke/${categories}?lang=fr&blacklistFlags=${flags}`;
+    // Construit l'URL pour la requête API avec les catégories et flags.
+    const apiUrl = `https://v2.jokeapi.dev/joke/${categories}?&blacklistFlags=${flags}`;
 
     // Effectue la requête API.
     fetch(apiUrl)
@@ -48,6 +48,34 @@ function displayJoke(joke) {
     const row = tableBody.insertRow(rowCount);
     row.insertCell(0).textContent = rowCount + 1;  // Numéro de la blague.
     row.insertCell(1).textContent = joke;  // Texte de la blague.
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.className = 'btn btn-danger btn-sm';  // Bootstrap classes for styling
+    deleteButton.addEventListener('click', function() {
+        deleteJoke(row, joke);
+    });
+
+    const actionCell = row.insertCell(2);
+    actionCell.appendChild(deleteButton);
+}
+function deleteJoke(row, joke) {
+    const tableBody = document.querySelector('#resultsTable tbody');
+
+    // Suppression de la blague du LocalStorage
+    let jokes = JSON.parse(localStorage.getItem('jokes')) || [];
+    const jokeIndex = jokes.indexOf(joke);
+    if (jokeIndex > -1) {
+        jokes.splice(jokeIndex, 1);
+        localStorage.setItem('jokes', JSON.stringify(jokes));
+    }
+
+    // Suppression de la ligne du tableau
+    tableBody.deleteRow(row.rowIndex);
+
+    // Mise à jour des numéros de ligne
+    for (let i = row.rowIndex; i < tableBody.rows.length; i++) {
+        tableBody.rows[i].cells[0].textContent = i + 1;
+    }
 }
 
 // Fonction pour sauvegarder une blague dans le LocalStorage.
